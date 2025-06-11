@@ -6,11 +6,10 @@ blueprint:
   input:
     notify_service:
       name: Service de notification
-      description: "Le service de notification à utiliser (ex: notify.mobile_app_iphone_de_thomas)"
+      description: "Le service de notification à utiliser"
       selector:
         entity:
           domain: notify
-
     frigate_event_type:
       name: Type d'événement Frigate
       description: Type d'événement Frigate à écouter (souvent 'end')
