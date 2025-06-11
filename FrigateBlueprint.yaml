@@ -40,6 +40,6 @@ blueprint:
           {{ trigger.event.data['after']['label'] | capitalize }} détecté(e) sur la caméra {{ trigger.event.data['after']['camera'] }}
         data:
           image: >-
-            {{ "http://192.168.1.XXX:8123/api/frigate/notifications/" ~ trigger.event.data['after']['id'] ~ "/thumbnail.jpg?format=jpeg" }}
+            {{ "http://192.168.1.156:8123/api/frigate/notifications/" ~ trigger.event.data['after']['id'] ~ "/thumbnail.jpg?format=jpeg" }}
           clickAction: /lovelace/cameras
   mode: queued
