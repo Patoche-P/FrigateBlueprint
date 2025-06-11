@@ -1,0 +1,45 @@
+blueprint:
+  name: Notification mobile Frigate avec image
+  description: >
+    Envoie une notification mobile avec image à la détection d'une personne, voiture, vélo, moto, oiseau, chien ou chat via Frigate.
+  domain: automation
+  input:
+    notify_service:
+      name: Service de notification
+      description: Le service de notification à utiliser (ex: notify.mobile_app_iphone_de_thomas)
+      selector:
+        entity:
+          domain: notify
+    frigate_event_type:
+      name: Type d'événement Frigate
+      description: Type d'événement Frigate à écouter (souvent 'end')
+      default: 'end'
+      selector:
+        text:
+    labels:
+      name: Labels à détecter
+      description: Liste des labels à surveiller (séparés par des virgules)
+      default: 'person,car,bicycle,motorcycle,bird,dog,cat'
+      selector:
+        text:
+  trigger:
+    platform: event
+    event_type: frigate.events
+  condition:
+    condition: template
+    value_template: >
+      {% set labels = labels.split(',') %}
+      {{ trigger.event.data.get('type') == frigate_event_type and
+         trigger.event.data.get('after') and
+         trigger.event.data['after']['label'] in labels }}
+  action:
+    - service: '{{ notify_service.entity_id }}'
+      data:
+        title: "🎯 Détection Frigate"
+        message: >
+          {{ trigger.event.data['after']['label'] | capitalize }} détecté(e) sur la caméra {{ trigger.event.data['after']['camera'] }}
+        data:
+          image: >-
+            {{ "http://192.168.1.XXX:8123/api/frigate/notifications/" ~ trigger.event.data['after']['id'] ~ "/thumbnail.jpg?format=jpeg" }}
+          clickAction: /lovelace/cameras
+  mode: queued
